@@ -1,0 +1,17 @@
+-- Initialize the maximum signal and its value
+local max_signal = nil
+local max_value = 0
+
+-- Loop through each input signal on the red wire
+for signal_name, signal_value in pairs(red) do
+    -- If the value of the signal is greater than the current maximum, update the maximum
+    if signal_value > max_value then
+        max_signal = signal_name
+        max_value = signal_value
+    end
+end
+
+-- Set the output signal to the name of the signal with the maximum value, if there is one
+if max_signal then
+    out[max_signal] = max_value
+end
