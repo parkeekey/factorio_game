@@ -11,7 +11,14 @@ for signal_name, signal_value in pairs(red) do
   end
 end
 
--- Output stored signal values to out table
+
+--IF you want to use with SR Latch, please create a condition 
+-- for example : 
+-- if green["signal-S"] == 1 then
+-- for signal_name, signal_value in pairs(red) do ---------- and don't forget the syntax end to if
+
+
+-- Output stored signal values to out table // No SR latch 
 for signal_name, signal_value in pairs(red_signals) do
   out[signal_name] = tonumber(signal_value) or 0
 end
