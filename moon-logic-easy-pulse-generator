@@ -1,0 +1,11 @@
+local input = tonumber(red["signal-A"]) or 0
+
+if input > 0 then
+  if game.tick % 4 == 0 or game.tick % 4 == 1 then
+    out["signal-A"] = input
+  else
+    out["signal-A"] = 0
+  end
+else
+  out["signal-A"] = 0
+end
