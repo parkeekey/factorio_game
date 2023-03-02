@@ -1,0 +1,29 @@
+local red_signals = {}
+local signal_a_count = out["signal-A"] or 0
+
+-- Loop over the red table and store numerical signal values in red_signals table
+for signal_name, signal_value in pairs(red) do
+  if type(signal_value) == "number" and signal_name ~= "signal-R" then
+    red_signals[signal_name] = signal_value
+  end
+end
+
+-- Output stored signal values to out table
+for signal_name, signal_value in pairs(red_signals) do
+  out[signal_name] = tonumber(signal_value) or 0
+end
+
+-- Increment signal-A every second
+delay, out["signal-A"] = 60, signal_a_count + 1
+
+-- Clear stored signal values when signal-A is 2 or greater
+if out["signal-A"] >= 2 then
+  for signal_name, _ in pairs(out) do
+    out[signal_name] = nil
+  end
+end
+
+-- Clear signal-A when signal-R is present
+if green["signal-X"] == 1 then
+  out["signal-A"] = nil
+end
