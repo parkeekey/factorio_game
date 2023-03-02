@@ -1,0 +1,36 @@
+--This is one of the accidental creation
+--that when the signal-A reaching 2, it will clear out the red wire input
+
+
+local red_signals = {}
+
+-- Loop over the red table and store numerical signal values in red_signals table
+for signal_name, signal_value in pairs(red) do
+  if type(signal_value) == "number" and signal_name ~= "signal-R" then
+    red_signals[signal_name] = signal_value
+  end
+end
+
+-- Output stored signal values to out table
+for signal_name, signal_value in pairs(red_signals) do
+  out[signal_name] = tonumber(signal_value) or 0
+end
+
+--prototype internal clock
+delay, out["signal-A"] = 60, (out["signal-A"] or 0) + 1
+
+if out["signal-A"] and out["signal-A"] >= 2 then 
+  for signal_name, _ in pairs(out) do
+    if signal_name ~= "signal-A" then
+      out[signal_name] = nil 
+    end
+  end
+end
+
+--clear out everything 
+if green["signal-X"] == 1 then
+  for signal_name, _ in pairs(out) do
+    out[signal_name] = nil
+  end
+  out["signal-A"] = nil
+end
