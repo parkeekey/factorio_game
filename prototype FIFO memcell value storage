@@ -1,0 +1,24 @@
+--Create my first memory cell on lua script!
+local red_signals = {}
+
+-- Check if M signal is present and matches the alpha value
+if red["signal-M"] == green["signal-greek-alpha"] then
+  -- Loop over the red table and store numerical signal values in red_signals table
+  for signal_name, signal_value in pairs(red) do
+    if type(signal_value) == "number" and signal_name ~= "signal-R" then
+      red_signals[signal_name] = signal_value
+    end
+  end
+end
+
+-- Output signal-N to signal-E
+if red_signals["signal-N"] then
+  out["signal-E"] = tonumber(red_signals["signal-N"]) or 0
+end
+
+-- Clear stored signal values when signal-R is present
+if red["signal-X"] == 1 then
+  for signal_name, _ in pairs(out) do
+    out[signal_name] = nil
+  end
+end
