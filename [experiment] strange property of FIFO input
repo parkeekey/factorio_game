@@ -1,0 +1,32 @@
+local mem = {}  -- Initialize FIFO memory
+local red_signals = {}  -- Initialize table for storing numerical signal values from red wire
+
+-- Check if M signal is present and matches the alpha value
+if red["signal-M"] == green["signal-greek-alpha"] then
+  -- Calculate shift value for FIFO cells based on signal-M and signal-D
+  local shift = red["signal-M"] - red["signal-D"] + 1
+  
+  -- Initialize memory cell at current shift value if it doesn't exist
+  if not mem[shift] then
+    mem[shift] = {}
+  end
+  
+  -- Loop over the red table and store numerical signal values in red_signals table
+  for signal_name, signal_value in pairs(red) do
+    if type(signal_value) == "number" and signal_name ~= "signal-R" and signal_name ~= "signal-D" then
+      mem[shift][signal_name] = signal_value
+    end
+  end
+end
+
+-- Sum up the numerical values from each memory cell to get the total value
+local total_value = 0
+for i, cell in pairs(mem) do
+  local digit_value = 10^(i-1)  -- Calculate digit value based on position in FIFO
+  for _, value in pairs(cell) do
+    total_value = total_value + value*digit_value
+  end
+end
+
+-- Output the total value to the signal-E
+out["signal-E"] = total_value
