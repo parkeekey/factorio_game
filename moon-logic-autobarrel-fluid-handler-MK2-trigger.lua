@@ -80,6 +80,3 @@ for _, fluid_name in pairs(fluids) do
     end
   end
 end
-
-This is the correct one. 
-It's done 
