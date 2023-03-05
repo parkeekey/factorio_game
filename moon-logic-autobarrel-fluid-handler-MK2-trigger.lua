@@ -80,3 +80,10 @@ for _, fluid_name in pairs(fluids) do
     end
   end
 end
+
+-- Clear stored signal values when signal-R is present
+if green["signal-X"] == 1 then
+  for signal_name, _ in pairs(out) do
+    out[signal_name] = nil
+  end
+end
