@@ -47,35 +47,42 @@ local fluids = {
   "biomethanol",
   "Mineral-Liquid"
 }
+local empty_barrel_signal = red["empty-barrel"] or 0
+local signal_E = green["signal-E"] or 0
+local signal_F = green["signal-F"] or 0
 
 for _, fluid_name in pairs(fluids) do
   local input_signal = red[fluid_name] or 0
 
-  if input_signal > 0 then
-    out["fill-" .. fluid_name .. "-barrel"] = input_signal
-    out["empty-" .. fluid_name .. "-barrel"] = input_signal
-    out["fill-" .. fluid_name .. "-ibc"] = input_signal
-   out["fill-" .. fluid_name .. "-pallet"] = input_signal
-   out["fill-" .. fluid_name .. "-tank"] = input_signal
-    out["empty-" .. fluid_name .. "-pallet"] = input_signal
-   out["empty-" .. fluid_name .. "-tank"] = input_signal
-    out["empty-" .. fluid_name .. "-ibc"] = input_signal
+  if empty_barrel_signal == 1 then
+    out["fill-" .. fluid_name .. "-barrel"] = signal_F == 1 and input_signal or 0
+    out["empty-" .. fluid_name .. "-barrel"] = signal_E == 1 and input_signal or 0
     out[fluid_name .. "-barrel"] = input_signal
-   out[fluid_name .. "-tank"] = input_signal
-  out[fluid_name .. "-ibc"] = input_signal
-  out[fluid_name .. "-pallet"] = input_signal
+  elseif empty_barrel_signal == 2 then
+    out["fill-" .. fluid_name .. "-pallet"] = signal_F == 1 and input_signal or 0
+    out["empty-" .. fluid_name .. "-pallet"] = signal_E == 1 and input_signal or 0
+    out[fluid_name .. "-pallet"] = input_signal
+  elseif empty_barrel_signal == 3 then
+    out["fill-" .. fluid_name .. "-ibc"] = signal_F == 1 and input_signal or 0
+    out["empty-" .. fluid_name .. "-ibc"] = signal_E == 1 and input_signal or 0
+    out[fluid_name .. "-ibc"] = input_signal
+  elseif empty_barrel_signal == 4 then
+    out["fill-" .. fluid_name .. "-tank"] = signal_F == 1 and input_signal or 0
+    out["empty-" .. fluid_name .. "-tank"] = signal_E == 1 and input_signal or 0
+    out[fluid_name .. "-tank"] = input_signal
   else
+    -- Handle other cases or leave empty based on your requirements
     out["fill-" .. fluid_name .. "-barrel"] = 0
+    out["fill-" .. fluid_name .. "-pallet"] = 0
     out["fill-" .. fluid_name .. "-ibc"] = 0
     out["fill-" .. fluid_name .. "-tank"] = 0
-    out["fill-" .. fluid_name .. "-pallet"] = 0
     out["empty-" .. fluid_name .. "-barrel"] = 0
-    out[fluid_name .. "-barrel"] = 0
-   out[fluid_name .. "-tank"] = 0
-   out[fluid_name .. "-ibc"] = 0
-   out[fluid_name .. "-pallet"] = 0
     out["empty-" .. fluid_name .. "-pallet"] = 0
-   out["empty-" .. fluid_name .. "-tank"] = 0
     out["empty-" .. fluid_name .. "-ibc"] = 0
+    out["empty-" .. fluid_name .. "-tank"] = 0
+    out[fluid_name .. "-barrel"] = 0
+    out[fluid_name .. "-pallet"] = 0
+    out[fluid_name .. "-ibc"] = 0
+    out[fluid_name .. "-tank"] = 0
   end
 end
