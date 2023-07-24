@@ -1,0 +1,48 @@
+-- AUTOFORGE SYSTEM -- Able to know what to produce in furnance automatically 
+-- Function to transform the input signal name to the corresponding output signal name
+local function transformSignal(signal_name)
+  local transformed_name
+
+  -- Check for specific cases
+  --1 lithium plate
+  if signal_name == "dark-lithium-ore" then
+    transformed_name = "lithium-plate"
+  --2 Glass
+  elseif signal_name == "sand" then
+    transformed_name = "glass"
+  --3 Silicon
+  elseif signal_name == "quartz" then
+    transformed_name = "silicon"
+  --4 Coke
+  elseif signal_name == "wood" and green["coal"] == 1 then
+    transformed_name = "coke"
+  -- end of special case area
+  else
+    -- If no specific case, apply the default transformation
+    transformed_name = signal_name:gsub("-ore$", "-plate")
+  end
+
+
+  -- Remove UNWANTED signal
+ -- Remove"coal" from the output
+  if transformed_name ~= nil then
+    transformed_name = transformed_name:gsub("coal", "signal-D")
+  end
+
+  return transformed_name
+end
+
+-- Get the green wire input signals and transform them to the output signals
+for signal_name, signal_value in pairs(green) do
+  local transformed_signal = transformSignal(signal_name)
+  if transformed_signal ~= nil then
+    out[transformed_signal] = signal_value
+  end
+end
+
+-- Clear stored signal values when signal-X is present
+if green["signal-X"] == 1 then
+  for signal_name, _ in pairs(out) do
+    out[signal_name] = nil
+  end
+end
