@@ -1,0 +1,94 @@
+-- Fluid handler script MODDED version, not for vanilla.
+-- Will turn any red wire input that are fluid items
+-- Match with the local fluids { }
+-- Then it will manipulate the string name so it will give you 3 signals
+-- FILL the barrel, EMPTY the barrel, REQUEST that barrel.
+
+-- YOU CAN UPDATE YOUR OWN FLUID ITEMS IN THE CODE local fluids { }
+-- RECOMMEND MODS
+-- Recommend to use with Pipe Meter mod to read the fluid signal in pipe
+-- Recommend to use with Crafting combinator to WRITE the signal to Assembler machine!
+-- HAPPY BARRELLING!
+
+-- The list of fluids includes vanilla game, K2 mod, and Darkstar mod
+-- to demonstrate that it works.
+
+local fluids = {
+  "water",
+  "blood",
+  "mineral-water",
+  "tar",
+  "aizhan-matter",
+  "antithetical-matter",
+  "copper-sulfate",
+  "crude-oil",
+  "cyclopentadiene",
+  "dark-matter",
+  "norbornadiene",
+  "quadricyclane",
+  "quantum-waste",
+  "heavy-oil",
+  "light-oil",
+  "fish-oil",
+  "petroleum-gas",
+  "alien-ooze",
+  "sulfuric-acid",
+  "sludge",
+  "blue-crude",
+  "lubricant",
+  "hydrogen",
+  "oxygen",
+  "chlorine",
+  "dirty-water",
+  "nitrogen",
+  "ammonia",
+  "nitric-acid",
+  "hydrogen-chloride",
+  "biomethanol",
+  "Mineral-Liquid"
+}
+
+local empty_barrel_signal = red["empty-barrel"] or 0
+local signal_E = red["signal-E"] or 0
+local signal_F =  red["signal-F"] or 0
+local signal_H =  red["signal-H"] or 0
+
+for _, fluid_name in pairs(fluids) do
+  local input_signal = green[fluid_name] or 0
+
+  if signal_H == 1 then
+    -- For high-pressure fluid without containers
+    out["high-pressure-" .. fluid_name] = input_signal
+  else
+    -- For regular fluid signals without high-pressure prefix
+    out[fluid_name] = input_signal
+  end
+
+  if empty_barrel_signal == 1 then
+    -- For barrel variant
+    if signal_H == 1 then
+      out["high-pressure-" .. fluid_name .. "-barrel"] = input_signal
+    else
+      out["fill-" .. fluid_name .. "-barrel"] = signal_F == 1 and input_signal or 0
+      out["empty-" .. fluid_name .. "-barrel"] = signal_E == 1 and input_signal or 0
+      out[fluid_name .. "-barrel"] = input_signal
+    end
+  else
+    -- Handle other cases (pallet, IBC, tank) if needed
+    out["fill-" .. fluid_name .. "-pallet"] = 0
+    out["fill-" .. fluid_name .. "-ibc"] = 0
+    out["fill-" .. fluid_name .. "-tank"] = 0
+    out["empty-" .. fluid_name .. "-pallet"] = 0
+    out["empty-" .. fluid_name .. "-ibc"] = 0
+    out["empty-" .. fluid_name .. "-tank"] = 0
+    out[fluid_name .. "-pallet"] = 0
+    out[fluid_name .. "-ibc"] = 0
+    out[fluid_name .. "-tank"] = 0
+  end
+end
+
+if green["signal-X"] == 1 then
+  for signal_name, _ in pairs(out) do
+    out[signal_name] = nil
+  end
+end
